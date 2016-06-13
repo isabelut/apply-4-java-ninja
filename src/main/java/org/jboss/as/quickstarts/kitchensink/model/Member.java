@@ -43,6 +43,7 @@ public class Member implements Serializable {
     @GeneratedValue
     private Long id;
 
+    @Column(unique = true)
     @NotNull
     @Size(min = 1, max = 25)
     @Pattern(regexp = "[^0-9]*", message = "Must not contain numbers")
@@ -58,6 +59,10 @@ public class Member implements Serializable {
     @Digits(fraction = 0, integer = 12)
     @Column(name = "phone_number")
     private String phoneNumber;
+    
+    @NotNull
+    @NotEmpty
+    private String address;
 
     public Long getId() {
         return id;
@@ -89,5 +94,13 @@ public class Member implements Serializable {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+    
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
