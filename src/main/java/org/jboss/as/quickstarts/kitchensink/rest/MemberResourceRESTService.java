@@ -108,6 +108,7 @@ public class MemberResourceRESTService {
             // Handle the unique constrain violation
             Map<String, String> responseObj = new HashMap<>();
             responseObj.put("email", "Email taken");
+            responseObj.put("name", "Name taken");
             builder = Response.status(Response.Status.CONFLICT).entity(responseObj);
         } catch (Exception e) {
             // Handle generic exceptions
@@ -145,8 +146,13 @@ public class MemberResourceRESTService {
         if (emailAlreadyExists(member.getEmail())) {
             throw new ValidationException("Unique Email Violation");
         }
+        
+        // Check the uniqueness name
+        if (nameAlreadyExists(member.getName())) {
+            throw new ValidationException("Unique Name Violation");
+        }
     }
-
+    
     /**
      * Creates a JAX-RS "Bad Request" response including a map of all violation fields, and their message. This can then be used
      * by clients to show violations.
@@ -177,6 +183,21 @@ public class MemberResourceRESTService {
         Member member = null;
         try {
             member = repository.findByEmail(email);
+        } catch (NoResultException e) {
+            // ignore
+        }
+        return member != null;
+    }
+    
+     /**
+     * Checks if a member with the same name is already registered. This is the only way to easily capture the
+     * @param namee The name to check
+     * @return True if the name already exists, and false otherwise
+     */
+    public boolean nameAlreadyExists(String name) {
+        Member member = null;
+        try {
+            member = repository.findByName(name);
         } catch (NoResultException e) {
             // ignore
         }
